@@ -307,7 +307,7 @@ class _socialbehaviorState extends State<socialbehavior> {
                         });
                         try{
 
-                          var responce = await http.post(Uri.parse("http://192.168.0.120:8000/api/v1/values"),body: {
+                          var responce = await http.post(Uri.parse("https://web-production-49bb.up.railway.app/api/v1/values"),body: {
                             "patient":patient_Id,
                             "Temperament":map.containsKey("Temperament")?map["Temperament"]!.score.toString():0.toString(),
                             "ATTACHMENT":map.containsKey("ATTACHMENT")?map["ATTACHMENT"]!.score.toString():0.toString(),
@@ -318,7 +318,7 @@ class _socialbehaviorState extends State<socialbehavior> {
                             "SOCIAL_EMOTIVE_BEHAVIOR":map.containsKey("SOCIAL_EMOTIVE_BEHAVIOR")?map["SOCIAL_EMOTIVE_BEHAVIOR"]!.score.toString():0.toString(),
                           });
 
-                          var responce2 = await http.post(Uri.parse("http://192.168.0.120:8000/api/v1/valuesNorD"),body: {
+                          var responce2 = await http.post(Uri.parse("https://web-production-49bb.up.railway.app/api/v1/valuesNorD"),body: {
                             "patient":patient_Id,
                             "Temperament":map.containsKey("Temperament")?map["Temperament"]!.Nscore.toString():0.toString(),
                             "ATTACHMENT":map.containsKey("ATTACHMENT")?map["ATTACHMENT"]!.Nscore.toString():0.toString(),

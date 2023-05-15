@@ -42,7 +42,7 @@ class _predictState extends State<predict> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: IconButton(icon:Icon(Icons.arrow_back),iconSize: 40.0,onPressed: (){Navigator.pop(context);},),
+                    child: IconButton(icon:Icon(Icons.arrow_back),iconSize: 40.0,onPressed: (){Navigator.push(context,MaterialPageRoute(builder:(context)=> statistics()));},),
                   ),
                   Align(
                     alignment: Alignment.center,

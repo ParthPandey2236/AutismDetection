@@ -13,4 +13,6 @@ router.post('/valuesNorD',values.norDValues);
 router.get("/scores",values.getValues);
 router.get("/scoresNorD",values.norDValues);
 
+router.get("/getAllValues",values.getAllValues);
+
 module.exports = router;

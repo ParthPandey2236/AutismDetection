@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'package:autismdetector/3ormore/motorDev.dart';
 import 'package:autismdetector/lessthan3/motorDev.dart';
 import 'package:autismdetector/prediction.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 import './Login.dart';
 import 'package:autismdetector/form.dart';
@@ -23,10 +24,73 @@ class statistics extends StatefulWidget {
   @override
   _statisticsState createState() => _statisticsState();
 }
+class character_mapping{
+  int i;
+  String character;
+  character_mapping(this.i,this.character);
+}
+int xaxisValue=0;
+  int yaxisValue =0;
+  int typeOfgraph =0;
+  List<String> typeOfGraph=[
+    "Scatter",
+    "Line",
+    "Bar",
+  ];
+List<String> nameOfCharater =[
+"ADAPTIVE",
+"MotorDevelopment",
+"Temperament",
+"ATTACHMENT",
+"SELF HELP",
+"SOCIAL EMOTIVE BEHAVIOR",
+"LANGUAGE AND COMMUNICATION",
+];
+class dbStatistics{
+  // ignore: non_constant_identifier_names
+  int ADAPTIVE;
+  int MotorDevelopment;
+  int Temperament;
+  int ATTACHMENT;
+  int SELF_HELP;
+  int SOCIAL_EMOTIVE_BEHAVIOR;
+  int LANGUAGE_AND_COMMUNICATION;
+
+  dbStatistics(this.ADAPTIVE,this.ATTACHMENT,this.LANGUAGE_AND_COMMUNICATION,this.MotorDevelopment,this.SELF_HELP,this.SOCIAL_EMOTIVE_BEHAVIOR,this.Temperament);
+  @override
+  String toString() {
+    return "${this.ADAPTIVE},${this.ATTACHMENT},${this.LANGUAGE_AND_COMMUNICATION},${this.MotorDevelopment},${this.SELF_HELP},${this.SOCIAL_EMOTIVE_BEHAVIOR},${this.Temperament}";
+  }
+}
+String dropDownValuex=nameOfCharater.first;
+String dropDownValuey = nameOfCharater.first;
+String typeofGraphName = typeOfGraph.first;
+bool newLoading = false;
 var patientId="";
 String patient_Id="";
 var age="";
+List<dbStatistics> statList = [];
 class _statisticsState extends State<statistics> {
+
+  void getvalue() async{
+  var response  = await http.get(Uri.parse("https://web-production-49bb.up.railway.app/api/v1/getAllValues"));
+  print(jsonDecode(response.body)["data"].length);
+
+  var jsonObject =jsonDecode(response.body)["data"];
+  for(int i=0;i<jsonObject.length;i++ ){
+  var tempstat = new dbStatistics((jsonObject[i]["ADAPTIVE"]),(jsonObject[i]["ATTACHMENT"]), (jsonObject[i]["LANGUAGE_AND_COMMUNICATION"]), (jsonObject[i]["MotorDevelopment"]), (jsonObject[i]["SELF_HELP"]), (jsonObject[i]["SOCIAL_EMOTIVE_BEHAVIOR"]),(jsonObject[i]["Temperament"]));
+  statList.add(tempstat);
+  }
+  for(int i=0;i<jsonObject.length;i++){
+  print(statList[i].toString());
+  }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    getvalue();
+    super.initState();
+  }
   var isLoading = false;
   final GlobalKey<FabCircularMenuState> fabKey = GlobalKey();
   List<bool> check = [false, false, false];
@@ -123,131 +187,405 @@ class _statisticsState extends State<statistics> {
                           const Color(0xFF92b1ff),
                         ])),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 40.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Align(
-                            alignment: Alignment.topRight,
-                            child: IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: Icon(Icons.logout),
-                              color: Colors.black,
-                              iconSize: 50,
-                              padding: EdgeInsets.only(top: 20, right: 30),
-                            )),
-                        Text(
-                          'Statistics',
-                          style: GoogleFonts.ebGaramond(
-                            textStyle: TextStyle(
-                              fontSize: 55.0,
-                              color: Color(0xFF424d69),
-                            ),
-                          ),
-                        ),
-                        Card(
-                          child: Container(
-                            height: MediaQuery.of(context).size.height / 8,
-                            width: 1.2 * MediaQuery.of(context).size.width / 2,
-                            child: Center(
-                              child: Text(
-                                '100',
-                                style: GoogleFonts.ebGaramond(
-                                    textStyle: TextStyle(
-                                  fontSize: 55.0,
-                                  color: Color(0xFF424d69),
-                                )),
+                  SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20.0,bottom: 70),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Align(
+                              alignment: Alignment.topRight,
+                              child: IconButton(
+                                onPressed: () {
+                                  Navigator.push(context,MaterialPageRoute(builder:(context)=> LoginScreen()));;
+                                },
+                                icon: Icon(Icons.logout),
+                                color: Colors.black,
+                                iconSize: 50,
+                                padding: EdgeInsets.only(top: 20, right: 30),
+                              )),
+                          Text(
+                            'Statistics',
+                            style: GoogleFonts.ebGaramond(
+                              textStyle: TextStyle(
+                                fontSize: 55.0,
+                                color: Color(0xFF424d69),
                               ),
                             ),
                           ),
-                          elevation: 8.0,
-                          shadowColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: Row(
-                            children: [
-                              Card(
-                                elevation: 8.0,
-                                shadowColor: Colors.black,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0)),
-                                child: Container(
-                                  height: 70.0,
-                                  width: 70.0,
-                                  child: Center(
-                                    child: Text(
-                                      '23',
-                                      style: GoogleFonts.ebGaramond(
-                                          textStyle: TextStyle(
-                                        fontSize: 20.0,
-                                        color: Color(0xFF424d69),
-                                      )),
-                                    ),
-                                  ),
-                                ),
+                          SizedBox(height: 20,),
+                          Text(
+                            'X-Axis',
+                            style: GoogleFonts.ebGaramond(
+                              textStyle: TextStyle(
+                                fontSize: 20.0,
+                                color: Color(0xFF424d69),
                               ),
-                              Icon(
-                                (Custom.up),
-                                size: 70.0,
-                                color: Colors.black.withOpacity(0.5),
-                              ),
-                              Card(
-                                elevation: 8.0,
-                                shadowColor: Colors.black,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0)),
-                                child: Container(
-                                  height: 70.0,
-                                  width: 70.0,
-                                  child: Center(
-                                    child: Text(
-                                      '77',
-                                      style: GoogleFonts.ebGaramond(
-                                          textStyle: TextStyle(
-                                        fontSize: 20.0,
-                                        color: Color(0xFF424d69),
-                                      )),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Icon(
-                                (Custom.down),
-                                size: 70.0,
-                                color: Colors.black.withOpacity(0.5),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 50,
-                        ),
-                        PieChart(
-                          dataMap: dataMap,
-                          colorList: colorList,
-                          animationDuration: Duration(milliseconds: 2000),
-                          chartRadius: MediaQuery.of(context).size.width / 2,
-                          chartValuesOptions: ChartValuesOptions(
-                            showChartValuesInPercentage: true,
-                          ),
-                          legendOptions: LegendOptions(
-                            legendTextStyle: GoogleFonts.ebGaramond(
-                                textStyle: TextStyle(
-                              fontSize: 20.0,
-                              color: Color(0xFF424d69),
-                            )),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Row(
+                              children: [
+                                // Card(
+                                //   elevation: 8.0,
+                                //   shadowColor: Colors.black,
+                                //   shape: RoundedRectangleBorder(
+                                //       borderRadius: BorderRadius.circular(15.0)),
+                                //   child: Container(
+                                //     height: 70.0,
+                                //     width: 70.0,
+                                //     child: Center(
+                                //       child: Text(
+                                //         '23',
+                                //         style: GoogleFonts.ebGaramond(
+                                //             textStyle: TextStyle(
+                                //               fontSize: 20.0,
+                                //               color: Color(0xFF424d69),
+                                //             )),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+                                DropdownButton<String>(
+                                    value : dropDownValuex,
+                                    items: nameOfCharater.map<DropdownMenuItem<String>>((String items){
+                                      return DropdownMenuItem<String>(value:items,child: Text(items),);
+                                    }).toList(),
+                                    icon: const Icon(Icons.keyboard_arrow_down),
+                                    onChanged: (value){
+                                      xaxisValue = nameOfCharater.indexOf(value!);
+                                      print("xa"+xaxisValue!.toString());
+                                      setState(() {
+                                        dropDownValuex = value;
+                                      });
 
-                            // legendPosition: dataMap.length>6?LegendPosition.bottom:LegendPosition.right,
-                            // showLegendsInRow: dataMap.length>6?true:false,
+                                    }
+
+                                ),
+                                // Icon(
+                                //   (Custom.up),
+                                //   size: 70.0,
+                                //   color: Colors.black.withOpacity(0.5),
+                                // ),
+                                // Card(
+                                //   elevation: 8.0,
+                                //   shadowColor: Colors.black,
+                                //   shape: RoundedRectangleBorder(
+                                //       borderRadius: BorderRadius.circular(15.0)),
+                                //   child: Container(
+                                //     height: 70.0,
+                                //     width: 70.0,
+                                //     child: Center(
+                                //       child: Text(
+                                //         '77',
+                                //         style: GoogleFonts.ebGaramond(
+                                //             textStyle: TextStyle(
+                                //               fontSize: 20.0,
+                                //               color: Color(0xFF424d69),
+                                //             )),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+                                // Icon(
+                                //   (Custom.down),
+                                //   size: 70.0,
+                                //   color: Colors.black.withOpacity(0.5),
+                                // ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 20,),
+                          Text(
+                            'Y-Axis',
+                            style: GoogleFonts.ebGaramond(
+                              textStyle: TextStyle(
+                                fontSize: 20.0,
+                                color: Color(0xFF424d69),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Row(
+                              children: [
+                                // Card(
+                                //   elevation: 8.0,
+                                //   shadowColor: Colors.black,
+                                //   shape: RoundedRectangleBorder(
+                                //       borderRadius: BorderRadius.circular(15.0)),
+                                //   child: Container(
+                                //     height: 70.0,
+                                //     width: 70.0,
+                                //     child: Center(
+                                //       child: Text(
+                                //         '23',
+                                //         style: GoogleFonts.ebGaramond(
+                                //             textStyle: TextStyle(
+                                //               fontSize: 20.0,
+                                //               color: Color(0xFF424d69),
+                                //             )),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+                                DropdownButton<String>(
+                                    value : dropDownValuey,
+                                    items: nameOfCharater.map<DropdownMenuItem<String>>((String items){
+                                      return DropdownMenuItem<String>(value:items,child: Text(items),);
+                                    }).toList(),
+                                    icon: const Icon(Icons.keyboard_arrow_down),
+                                    onChanged: (value){
+                                      yaxisValue = nameOfCharater.indexOf(value!);
+                                      print("ya"+yaxisValue!.toString());
+                                      setState(() {
+                                        dropDownValuey = value;
+                                      });
+
+                                    }
+
+                                ),
+                                // Icon(
+                                //   (Custom.up),
+                                //   size: 70.0,
+                                //   color: Colors.black.withOpacity(0.5),
+                                // ),
+                                // Card(
+                                //   elevation: 8.0,
+                                //   shadowColor: Colors.black,
+                                //   shape: RoundedRectangleBorder(
+                                //       borderRadius: BorderRadius.circular(15.0)),
+                                //   child: Container(
+                                //     height: 70.0,
+                                //     width: 70.0,
+                                //     child: Center(
+                                //       child: Text(
+                                //         '77',
+                                //         style: GoogleFonts.ebGaramond(
+                                //             textStyle: TextStyle(
+                                //               fontSize: 20.0,
+                                //               color: Color(0xFF424d69),
+                                //             )),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+                                // Icon(
+                                //   (Custom.down),
+                                //   size: 70.0,
+                                //   color: Colors.black.withOpacity(0.5),
+                                // ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 20,),
+                          Text(
+                            'Graph type',
+                            style: GoogleFonts.ebGaramond(
+                              textStyle: TextStyle(
+                                fontSize: 20.0,
+                                color: Color(0xFF424d69),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Row(
+                              children: [
+                                // Card(
+                                //   elevation: 8.0,
+                                //   shadowColor: Colors.black,
+                                //   shape: RoundedRectangleBorder(
+                                //       borderRadius: BorderRadius.circular(15.0)),
+                                //   child: Container(
+                                //     height: 70.0,
+                                //     width: 70.0,
+                                //     child: Center(
+                                //       child: Text(
+                                //         '23',
+                                //         style: GoogleFonts.ebGaramond(
+                                //             textStyle: TextStyle(
+                                //               fontSize: 20.0,
+                                //               color: Color(0xFF424d69),
+                                //             )),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+                                DropdownButton<String>(
+                                    value : typeofGraphName,
+                                    items: typeOfGraph.map<DropdownMenuItem<String>>((String items){
+                                      return DropdownMenuItem<String>(value:items,child: Text(items),);
+                                    }).toList(),
+                                    icon: const Icon(Icons.keyboard_arrow_down),
+                                    onChanged: (value){
+                                      typeOfgraph = typeOfGraph.indexOf(value!);
+                                      print("graph"+typeOfgraph!.toString());
+                                      setState(() {
+                                        typeofGraphName = value;
+                                      });
+
+                                    }
+
+                                ),
+                                // Icon(
+                                //   (Custom.up),
+                                //   size: 70.0,
+                                //   color: Colors.black.withOpacity(0.5),
+                                // ),
+                                // Card(
+                                //   elevation: 8.0,
+                                //   shadowColor: Colors.black,
+                                //   shape: RoundedRectangleBorder(
+                                //       borderRadius: BorderRadius.circular(15.0)),
+                                //   child: Container(
+                                //     height: 70.0,
+                                //     width: 70.0,
+                                //     child: Center(
+                                //       child: Text(
+                                //         '77',
+                                //         style: GoogleFonts.ebGaramond(
+                                //             textStyle: TextStyle(
+                                //               fontSize: 20.0,
+                                //               color: Color(0xFF424d69),
+                                //             )),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+                                // Icon(
+                                //   (Custom.down),
+                                //   size: 70.0,
+                                //   color: Colors.black.withOpacity(0.5),
+                                // ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 30,),
+                          ElevatedButton(
+
+                            style: ElevatedButton.styleFrom(
+
+                              minimumSize: Size(70,50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0), // <-- Radius
+                              ),
+                              primary: Colors.green,
+
+                            ),
+                            // onPressed: () async {
+                            //   var response = await new Dio().post('https://autismdetection.herokuapp.com/api/v1/sendOTP',
+                            //       data: {
+                            //         "email": emailId,
+                            //       }
+                            //   );
+                            // },
+                            onPressed: ()  {
+                              setState(() {
+                                newLoading = true;
+                                print(xaxisValue.toString()+" "+yaxisValue.toString()+" "+typeOfgraph.toString()+"Vlaues geeting");
+                              });
+                            },
+                            child: Text('Submit',style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20
+
+                            ),),
+                          ),
+
+                          SizedBox(
+                            height: 50,
+                          ),
+                          // PieChart(
+                          //   dataMap: dataMap,
+                          //   colorList: colorList,
+                          //   animationDuration: Duration(milliseconds: 2000),
+                          //   chartRadius: MediaQuery.of(context).size.width / 2,
+                          //   chartValuesOptions: ChartValuesOptions(
+                          //     showChartValuesInPercentage: true,
+                          //   ),
+                          //   legendOptions: LegendOptions(
+                          //     legendTextStyle: GoogleFonts.ebGaramond(
+                          //         textStyle: TextStyle(
+                          //       fontSize: 20.0,
+                          //       color: Color(0xFF424d69),
+                          //     )),
+                          //
+                          //     // legendPosition: dataMap.length>6?LegendPosition.bottom:LegendPosition.right,
+                          //     // showLegendsInRow: dataMap.length>6?true:false,
+                          //   ),
+                          // ),
+                          newLoading?
+                          SfCartesianChart(
+                            tooltipBehavior: TooltipBehavior(enable: true),
+                              //primaryXAxis: CategoryAxis(),
+                            series: [
+                              typeOfgraph==0?
+                              ScatterSeries<dbStatistics,num>(
+                                dataSource: statList,
+                                xValueMapper: (dbStatistics ds ,_)=>
+                                xaxisValue==0?ds.ADAPTIVE:
+                                xaxisValue==1?ds.MotorDevelopment:
+                                    xaxisValue==2 ? ds.Temperament:
+                                        xaxisValue==3 ? ds.ATTACHMENT:
+                                            xaxisValue==4? ds.SELF_HELP:
+                                                xaxisValue==5? ds.SOCIAL_EMOTIVE_BEHAVIOR:
+                                                    ds.LANGUAGE_AND_COMMUNICATION,
+                              yValueMapper: (dbStatistics ds ,_)=>
+                                yaxisValue==0?ds.ADAPTIVE:
+                                yaxisValue==1?ds.MotorDevelopment:
+                                yaxisValue==2 ? ds.Temperament:
+                                yaxisValue==3 ? ds.ATTACHMENT:
+                                yaxisValue==4? ds.SELF_HELP:
+                                yaxisValue==5? ds.SOCIAL_EMOTIVE_BEHAVIOR:
+                                ds.LANGUAGE_AND_COMMUNICATION,
+                              ):
+                                  typeOfgraph==1?
+                                  LineSeries<dbStatistics,num>(
+                                    dataSource: statList,
+                                    xValueMapper: (dbStatistics ds ,_)=>
+                                    xaxisValue==0?ds.ADAPTIVE:
+                                    xaxisValue==1?ds.MotorDevelopment:
+                                    xaxisValue==2 ? ds.Temperament:
+                                    xaxisValue==3 ? ds.ATTACHMENT:
+                                    xaxisValue==4? ds.SELF_HELP:
+                                    xaxisValue==5? ds.SOCIAL_EMOTIVE_BEHAVIOR:
+                                    ds.LANGUAGE_AND_COMMUNICATION,
+                                    yValueMapper: (dbStatistics ds ,_)=>
+                                    yaxisValue==0?ds.ADAPTIVE:
+                                    yaxisValue==1?ds.MotorDevelopment:
+                                    yaxisValue==2 ? ds.Temperament:
+                                    yaxisValue==3 ? ds.ATTACHMENT:
+                                    yaxisValue==4? ds.SELF_HELP:
+                                    yaxisValue==5? ds.SOCIAL_EMOTIVE_BEHAVIOR:
+                                    ds.LANGUAGE_AND_COMMUNICATION,
+                                  ):
+                                    BarSeries<dbStatistics,num>(
+                                dataSource: statList,
+                                xValueMapper: (dbStatistics ds ,_)=>
+                                xaxisValue==0?ds.ADAPTIVE:
+                                xaxisValue==1?ds.MotorDevelopment:
+                                xaxisValue==2 ? ds.Temperament:
+                                xaxisValue==3 ? ds.ATTACHMENT:
+                                xaxisValue==4? ds.SELF_HELP:
+                                xaxisValue==5? ds.SOCIAL_EMOTIVE_BEHAVIOR:
+                                ds.LANGUAGE_AND_COMMUNICATION,
+                                yValueMapper: (dbStatistics ds ,_)=>
+                                yaxisValue==0?ds.ADAPTIVE:
+                                yaxisValue==1?ds.MotorDevelopment:
+                                yaxisValue==2 ? ds.Temperament:
+                                yaxisValue==3 ? ds.ATTACHMENT:
+                                yaxisValue==4? ds.SELF_HELP:
+                                yaxisValue==5? ds.SOCIAL_EMOTIVE_BEHAVIOR:
+                                ds.LANGUAGE_AND_COMMUNICATION,
+                              )
+
+
+                            ]
+                          ):SizedBox(width: 0,height: 0,),
+                        ],
+                      ),
                     ),
                   ),
                   isLoading
@@ -601,7 +939,7 @@ class _statisticsState extends State<statistics> {
                                         //   }
                                         // );
                                         // patientId=response.data['data']['patientId'];
-                                        var responce2 = await http.post(Uri.parse("http://192.168.0.120:8000/api/v1/patients/register"),
+                                        var responce2 = await http.post(Uri.parse("https://web-production-49bb.up.railway.app/api/v1/patients/register"),
                                             body:{
                                               "PhoneNo": phoneno.toString(),
                                               "name": name,

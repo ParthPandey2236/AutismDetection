@@ -1,10 +1,12 @@
+import 'dart:convert';
+
 import 'package:autismdetector/ForgotPassword.dart';
 import 'package:autismdetector/Statistics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dio/dio.dart';
-
+import 'package:http/http.dart' as http;
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -156,13 +158,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         onPressed: ()async{
                             print(Emailid);
-                            var response = await new Dio().post('http://192.168.0.120:8000/api/v1/doctors/login',
-                            data: {
+                            // var response = await new Dio().post('https://web-production-49bb.up.railway.app/api/v1/doctors/login',
+                            // data: {
+                            //   "email" : Emailid,
+                            //   "password" : password
+                            // });
+                            var responce = await http.post(Uri.parse("https://web-production-49bb.up.railway.app/api/v1/doctors/login"),body: {
                               "email" : Emailid,
                               "password" : password
                             });
-                            if(response.data['message'].contains('Token Created Successfully')){
-                              doctor_id = response.data['data']['user'].toString();
+                            var response = jsonDecode(responce.body);
+                            print(response["message"]);
+                            if(response["message"].contains('Token Created Successfully')){
+                              doctor_id = response['data']['user'].toString();
                               Navigator.push(context,MaterialPageRoute(builder:(context)=> statistics()));
                             }
 
@@ -280,8 +288,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             ),
                             onPressed: () async {
-                              var response = await new Dio().post('http://192.168.0.120:8000/api/v1/sendOTP',
-                                data: {
+
+                              var response = await  http.post(Uri.parse('https://web-production-49bb.up.railway.app/api/v1/sendOTP'),
+                                body: {
                                 "email": emailId,
                                 }
                               );
@@ -335,13 +344,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             onPressed: () async {
                               Navigator.pop(context);
-                              var response = await new Dio().post('http://192.168.0.120:8000/api/v1/verifyOTP',
-                                  data: {
+                              var responce = await  http.post(Uri.parse('https://web-production-49bb.up.railway.app/api/v1/verifyOTP'),
+                                  body: {
                                     "email": emailId,
                                     "otp": otp,
                                   }
                               );
-                              if(response.data['message'].contains('Otp verified')){
+                              var response = jsonDecode(responce.body);
+                              if(response['message'].contains('Otp verified')){
                                 showResetPasswordBottomSheet(context);
                               }
                             },

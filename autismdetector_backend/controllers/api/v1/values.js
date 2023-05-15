@@ -24,6 +24,22 @@ module.exports.norDValues = async function(req,res){
  })
 }
 
+module.exports.getAllValues = async function(req,res){
+    try{
+        let allUserInfo = await StatisReference.find();
+        return res.status(200).json({
+            message: "The details are as listed",
+            data : allUserInfo
+        });
+    }
+    catch(e){
+        return res.status(200).json({
+                message: "Error in getting data",
+                
+            });
+    }
+}
+
 module.exports.getValues = async function(req,res){
     let user = await StatisReference.findById({patient: req.body.patient_id});
     return res.status(200).json({
